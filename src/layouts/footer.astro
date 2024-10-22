@@ -1,0 +1,29 @@
+---
+import {
+  FooterNavigation,
+  FooterSocialMediaList,
+  FooterLocationInfo,
+  FooterLogo
+} from '@/components/shared'
+import type { FooterProps } from '@/types/props'
+
+const { schema, navigation, hideFooterLocationInfo }: FooterProps = Astro.props
+---
+
+<footer class="bg-secondary-950 relative z-1 pb-24 pt-12">
+  <div class="max-w-8xl container mx-auto space-y-16 text-center lg:text-left">
+    <!-- Footer Location Info -->
+    {!hideFooterLocationInfo && <FooterLocationInfo schema={schema} />}
+
+    <!-- navigation area  -->
+    <FooterNavigation navigation={navigation} />
+
+    <div>
+      <!-- Footer Logo -->
+      <FooterLogo />
+
+      <!-- Footer Social Media -->
+      <FooterSocialMediaList schema={schema} className="mt-5 flex justify-center space-x-5" />
+    </div>
+  </div>
+</footer>

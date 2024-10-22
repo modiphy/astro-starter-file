@@ -1,0 +1,40 @@
+---
+import { SectionTitles, SectionBodies, SectionButtons } from '@/shared'
+import { SectionLayout, ContainerLayout } from '@/components/layouts'
+
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+
+// props from astro
+const { fields, sectionCount = 0 } = Astro.props
+
+const fieldsModel = new PageSectionFieldsModel(fields, sectionCount)
+
+// options for default classes and styles
+const sectionOptions = fieldsModel.sectionOptions
+const containerOptions = { ...fieldsModel.containerOptions, textAlign: 'text-center' }
+const titleOptions = fieldsModel.titleOptions
+const bodyOptions = fieldsModel.bodyOptions
+const buttonOptions = {
+  ...fieldsModel.buttonOptions,
+  button: { className: 'flex mx-auto max-w-lg', componentType: 'ButtonPrimary' }
+}
+const otherOptions = { ...fieldsModel.otherOptions, subContainer: 'mx-auto lg:text-center' }
+---
+
+<SectionLayout sectionOptions={sectionOptions}>
+  <ContainerLayout containerOptions={containerOptions}>
+    <div class={otherOptions.subContainer}>
+      <SectionTitles fields={fieldsModel} titleOptions={titleOptions} />
+
+      <SectionBodies fields={fieldsModel} bodyOptions={bodyOptions} />
+
+      <SectionButtons
+        fields={fieldsModel}
+        buttonOptions={buttonOptions}
+        divClass="mt-8 grid space-y-2"
+      />
+
+      {fieldsModel.embed && <div class="py-10" set:html={fieldsModel.embed} />}
+    </div>
+  </ContainerLayout>
+</SectionLayout>

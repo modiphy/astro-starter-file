@@ -1,0 +1,25 @@
+---
+import { ImageRight } from '@/sections'
+
+const { fields, sectionCount = 0 } = Astro.props
+
+const classes = {
+  mainDiv: 'relative grid lg:grid-cols-2 lg:gap-12 xl:gap-16 2xl:gap-20 xl:grid-cols-12',
+  textDiv: 'xl:col-span-8 lg:row-start-1 mt-4 lg:mt-0',
+  image: {
+    mainDiv: 'mx-auto xl:col-span-4',
+    subDiv: '',
+    class: 'relative z-1 object-center shadow-md',
+    width: 1500,
+    height: 1500
+  }
+}
+---
+
+<ImageRight
+  fields={fields}
+  sectionCount={sectionCount}
+  classes={classes}
+  imageSvgLeft={true}
+  imageSvgTopRight={false}
+/>

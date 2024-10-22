@@ -1,0 +1,11 @@
+---
+import { Default } from '@/sections'
+
+const { fields, sectionCount = 0 } = Astro.props
+---
+
+<Default
+  fields={fields}
+  sectionCount={sectionCount}
+  collectionComponent="CollectionTestimonialList"
+/>

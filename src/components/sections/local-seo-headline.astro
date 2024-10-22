@@ -1,0 +1,45 @@
+---
+import { SectionTitles, SectionBodies, SectionButtons, Img } from '@/shared'
+import { SectionLayout, ContainerLayout } from '@/components/layouts'
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+
+// props from astro
+const {
+  fields,
+  sectionCount = 0,
+  collectionComponent = undefined,
+  options = undefined
+} = Astro.props
+
+const fieldsModel = new PageSectionFieldsModel(fields, sectionCount)
+
+// options for default classes and styles
+const sectionOptions = options?.sectionOptions ? options.sectionOptions : fieldsModel.sectionOptions
+const containerOptions = options?.containerOptions
+  ? options.containerOptions
+  : fieldsModel.containerOptions
+const titleOptions = options?.titleOptions ? options.titleOptions : fieldsModel.titleOptions
+const bodyOptions = options?.bodyOptions ? options.bodyOptions : fieldsModel.bodyOptions
+const buttonOptions = options?.buttonOptions ? options.buttonOptions : fieldsModel.buttonOptions
+const otherOptions = options?.otherOptions ? options.otherOptions : fieldsModel.otherOptions
+---
+
+<section class="relative overflow-hidden bg-vibrant-shade">
+  <div
+    class="aspect-w-1 absolute inset-0 z-0 bg-fixed opacity-20 saturate-0"
+    style={`background-image: url(${fieldsModel.backgroundImage.imageUrl}); background-repeat: no-repeat; background-size: cover; background-position: right center;`}
+  >
+  </div><div class="container relative z-1 max-w-screen-2xl py-24 lg:py-28">
+    <div class="mx-auto grid max-w-5xl justify-center text-center">
+      <div style="opacity: 1; transform: none;">
+        <h1 class="undefined text-center font-heading text-4xl font-bold text-white md:text-6xl">
+          {fieldsModel.title}
+        </h1>
+      </div><div style="opacity: 1; transform: none;">
+        <h3 class="undefined mt-6 text-center text-lg text-white lg:text-xl">
+          {fieldsModel.subtitle}
+        </h3>
+      </div>
+    </div>
+  </div>
+</section>

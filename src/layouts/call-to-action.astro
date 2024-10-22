@@ -1,0 +1,41 @@
+---
+import * as SectionComponent from '@/sections'
+
+import { getCollection } from '@/api/flux-collection'
+import CollectionModel from '@/models/collection-model'
+import ItemModel from '@/models/item-model'
+
+import type { ApiOptions } from '@/types/api-types'
+
+type componentTypes = typeof SectionComponent
+type componentTypeKeys = keyof componentTypes
+
+function getComponent(type: componentTypeKeys): any {
+  return SectionComponent[type]
+}
+
+const { callToActionSchema } = Astro.props
+
+const options: ApiOptions = {
+  id: callToActionSchema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+  loadChildCollections: false
+}
+
+const { items } = await getCollection(options)
+const filteredItems = items.filter((item: ItemModel) => item.fields.active)
+---
+
+<>
+  {
+    filteredItems?.map((section: ItemModel) => {
+      const temp = new ItemModel(section)
+      const Section = getComponent(temp.sectionType as componentTypeKeys)
+
+      if (Section) {
+        return <Section fields={temp.fields} />
+      }
+    })
+  }
+</>

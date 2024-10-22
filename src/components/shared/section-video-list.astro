@@ -1,0 +1,35 @@
+---
+import { VideoCard } from '@/shared'
+
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+import CollectionModel from '@/models/collection-model'
+
+import { getCollection } from '@/api/flux-collection'
+import type { ApiOptions } from '@/types/api-types'
+
+const { item } = Astro.props
+const fields = new PageSectionFieldsModel(item.fields)
+
+// for content collection
+let activeItems = []
+
+if (fields.contentCollection) {
+  const options: ApiOptions = {
+    id: fields.contentCollection,
+    model: CollectionModel,
+    fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+    loadChildCollections: true
+  }
+
+  const { items } = await getCollection(options)
+  activeItems = items.filter((item: any) => item.fields.active)
+}
+---
+
+{
+  activeItems.length > 0 && (
+    <div class="mt-6 grid flex-wrap justify-center md:flex">
+      {activeItems.length > 0 && activeItems?.map((data: any) => <VideoCard data={data} />)}
+    </div>
+  )
+}

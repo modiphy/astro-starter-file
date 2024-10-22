@@ -1,0 +1,76 @@
+---
+import { getCollection } from '@/api/flux-collection'
+import type { ApiOptions } from '@/types/api-types'
+import CollectionModel from '@/models/collection-model'
+// import PageSectionButtonModel from '@/models/page-section-button-model'
+import { ButtonText, ButtonPhone, ButtonPrimary, Img } from '@/shared'
+
+const { schema } = Astro.props
+
+const options: ApiOptions = {
+  id: schema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,sectionCollection,fields}',
+  loadChildCollections: false
+}
+
+const { items } = await getCollection(options)
+
+const phones = items.filter((item: any) => item.fields.buttonType === 'phone')
+const primaryButtons = items.filter((item: any) => item.fields.buttonType === 'button-primary')
+---
+
+<div class="flex items-center justify-end">
+  <div class="relative hidden h-14 items-center justify-end rounded-sm bg-primary md:flex">
+    {
+      primaryButtons?.map((item: any) => (
+        <div class="h-full items-center px-4 hover:bg-primary-600">
+          <ButtonText
+            button={{
+              ...item.fields.button,
+              buttonPageLink: item.fields.buttonPageLink
+            }}
+            buttonClass="flex items-center justify-center text-lg font-bold uppercase font-heading text-white h-full"
+          >
+            {item.fields.button ? item.fields.button.text : item.name}
+          </ButtonText>
+        </div>
+      ))
+    }
+
+    <div class="h-8 w-[2px] bg-white"></div>
+
+    {
+      phones?.map((phone: any) => {
+        return (
+          <span class="hidden flex-shrink-0 items-center text-base font-semibold sm:flex">
+            {phone.fields.icon && (
+              <span class="is-inline-block">
+                <Img
+                  image={phone.fields.icon}
+                  imageClass=" text-primary-500 h-4 w-4 md:h-5 md:w-5"
+                />
+              </span>
+            )}
+            <div>
+              <ButtonPhone
+                button={{
+                  ...phone.fields.button,
+                  buttonPageLink: phone.fields.buttonPageLink
+                }}
+                buttonClass="inline-flex button uppercase text-heading text-lg text-white hover:bg-primary-600"
+              >
+                <div class="flex flex-col">
+                  <span class="font-heading text-xs font-normal">Give us a Call</span>
+                  <span class="-mt-1 font-heading text-lg font-bold">
+                    {phone.fields.button ? phone.fields.button.text : ''}
+                  </span>
+                </div>
+              </ButtonPhone>
+            </div>
+          </span>
+        )
+      })
+    }
+  </div>
+</div>

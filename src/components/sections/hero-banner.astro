@@ -1,0 +1,91 @@
+---
+import { SectionTitles, SectionBodies, ButtonText, Img } from '@/shared'
+import { SectionLayout, ContainerLayout } from '@/components/layouts'
+
+import PageHeroSectionFieldsModel from '@/models/page-hero-section-fields-model'
+import CollectionModel from '@/models/collection-model'
+
+import { getCollection } from '@/api/flux-collection'
+import type { ApiOptions } from '@/types/api-types'
+
+const { fields, options, showChips = false } = Astro.props
+
+const fieldsModel = new PageHeroSectionFieldsModel(fields)
+
+const sectionOptions = { ...fieldsModel.sectionOptions, customClass: 'w-full lg:h-[70vh]' }
+const containerOptions = options?.containerOptions
+  ? options.containerOptions
+  : fieldsModel.containerOptions
+const titleOptions = options?.titleOptions ? options.titleOptions : fieldsModel.titleOptions
+const bodyOptions = options?.bodyOptions ? options.bodyOptions : fieldsModel.bodyOptions
+const otherOptions = options?.otherOptions ? options.otherOptions : fieldsModel.otherOptions
+
+// for content collection
+let activeItems = []
+
+if (fields.contentCollection) {
+  const options: ApiOptions = {
+    id: fields.contentCollection,
+    model: CollectionModel,
+    fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+    loadChildCollections: true
+  }
+
+  const { items } = await getCollection(options)
+  activeItems = items.filter((item: any) => item.fields.active)
+}
+---
+
+<SectionLayout sectionOptions={sectionOptions}>
+  <ContainerLayout containerOptions={containerOptions}>
+    {
+      fieldsModel.backgroundImage && (
+        <>
+          <figure class="aspect-h-9 aspect-w-16 xl:hidden">
+            <Img
+              image={fieldsModel.backgroundImage}
+              imageClass="absolute left-0 top-0 h-full w-full object-cover object-center"
+            />
+          </figure>
+
+          <figure>
+            <Img
+              image={fieldsModel.backgroundImage}
+              imageClass="hidden xl:block absolute left-0 top-0 h-full w-full object-cover object-center"
+            />
+          </figure>
+        </>
+      )
+    }
+    <div class={otherOptions.subContainer}>
+      <div class={otherOptions.titleContainer}>
+        <SectionTitles fields={fieldsModel} titleOptions={titleOptions} />
+
+        <SectionBodies fields={fieldsModel} bodyOptions={bodyOptions} />
+
+        {
+          fieldsModel.button && (
+            <div class="relative z-1000 mt-4 flex space-y-2 lg:mt-8">
+              <ButtonText
+                buttonClass="button-outlined inline-flex border-white text-white hover:bg-white hover:text-gray-700 text-base"
+                button={{ ...fieldsModel.button, buttonPageLink: fieldsModel.buttonPageLink }}
+              >
+                {fieldsModel.button.text}
+              </ButtonText>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </ContainerLayout>
+
+  <div class="absolute inset-y-0 right-0 top-0 z-1">
+    <img
+      src="https://fluxconsole.com/files/item/1334/173957/shape-1.png"
+      alt="britt hill"
+      height={500}
+      width={500}
+      class="h-[10vh] w-full md:h-[15vh] lg:md:h-[20vh] 2xl:h-[30vh]"
+    />
+  </div>
+</SectionLayout>

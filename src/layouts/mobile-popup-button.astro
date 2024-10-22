@@ -1,0 +1,45 @@
+---
+import { getCollection } from '@/api/flux-collection'
+import { ButtonPrimary } from '@/shared'
+import type { ApiOptions } from '@/types/api-types'
+import CollectionModel from '@/models/collection-model'
+
+const { schema } = Astro.props
+
+const options: ApiOptions = {
+  id: schema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,sectionCollection,fields}',
+  loadChildCollections: false
+}
+
+const { items } = await getCollection(options)
+
+const button = items.find((item: any) => item.fields.isMobileFooterButton)
+---
+
+<div
+  x-data="{ 'isScrolling' : false, 'scrollTargetY' : 20 }"
+  @scroll.window="isScrolling = window.scrollY > scrollTargetY"
+  id="mobile-footer-button"
+  x-show="isScrolling"
+  x-transition:enter="transition ease-out duration-200"
+  x-transition:enter-start="translate-y-20"
+  x-transition:enter-end="translate-y-0"
+  x-transition:leave="transition duration-150 ease-in"
+  x-transition:leave-start="translate-y-0"
+  x-transition:leave-end="translate-y-20"
+  class="fixed bottom-0 left-0 right-0 z-100 border-t border-gray-200 bg-white p-2 lg:hidden"
+>
+  <div class="mt-0">
+    <ButtonPrimary
+      buttonClass="flex w-full"
+      button={{
+        ...button.fields.button,
+        buttonPageLink: button.fields.buttonPageLink ? button.fields.buttonPageLink : ''
+      }}
+    >
+      {button.fields.button.text}
+    </ButtonPrimary>
+  </div>
+</div>

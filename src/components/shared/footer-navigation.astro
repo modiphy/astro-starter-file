@@ -1,0 +1,68 @@
+---
+import { ButtonText } from '@/shared'
+import ItemModel from '@/models/item-model'
+
+const { navigation } = Astro.props
+
+const filteredNavs = navigation.filter(
+  (item: any) => item.name !== 'Home' && item.name !== 'Pricing'
+)
+const parentNav = filteredNavs.filter(
+  (item: any) => item.parentId === 0 && item.fields.showInNavigation
+)
+---
+
+<nav>
+  <ul class="space-y-4 lg:flex lg:justify-between lg:space-y-0">
+    {
+      parentNav?.map((nav: any) => {
+        const item = new ItemModel(nav)
+        const subnav = filteredNavs.filter((subnav: any) => subnav.parentId === item.id)
+
+        if (subnav.length === 0) {
+          return (
+            <li class="block">
+              <ButtonText
+                button={{
+                  ...item.fields.nav,
+                  buttonPageLink: item.fields?.pageLink ?? undefined
+                }}
+                slug={`/${item.slug}`}
+                buttonClass="block font-normal uppercase tracking-wide text-gray-500 hover:text-black"
+              >
+                {item.fields.nav?.text ? item.fields.nav?.text : item.name}
+              </ButtonText>
+            </li>
+          )
+        }
+
+        return (
+          <li class="block">
+            <div class="block font-normal uppercase tracking-wide text-gray-500 hover:text-black">
+              {item.name}
+            </div>
+            <ul class="space-y-1 md:mt-3">
+              {subnav?.map((nav: any) => {
+                const subItem = new ItemModel(nav)
+                const slug = `/${item.slug}/${subItem.slug}`
+
+                return (
+                  <ButtonText
+                    button={{
+                      ...subItem.fields.nav,
+                      buttonPageLink: subItem.fields?.pageLink ?? undefined
+                    }}
+                    slug={slug}
+                    buttonClass="mt-1 block text-sm font-normal tracking-wide text-gray-400 hover:text-gray-300"
+                  >
+                    {subItem.fields.nav?.text ? subItem.fields.nav?.text : subItem.name}
+                  </ButtonText>
+                )
+              })}
+            </ul>
+          </li>
+        )
+      })
+    }
+  </ul>
+</nav>

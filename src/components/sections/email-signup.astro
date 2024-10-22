@@ -1,0 +1,91 @@
+---
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+import { getCollection } from '@/api/flux-collection'
+import CollectionModel from '@/models/collection-model'
+import { schemaOptions } from '@/types/options'
+import type { ApiOptions } from '@/types/api-types'
+import { collection_schema } from '@/constants/page-section'
+
+const { fields }: any = Astro.props
+
+const fieldsModel = new PageSectionFieldsModel(fields)
+
+const schema = await getCollection(schemaOptions)
+const settingSchema = schema.find((item: any) => item.name === collection_schema.SETTINGS)
+const settingOptions: ApiOptions = {
+  id: settingSchema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,sectionCollection,fields}',
+  loadChildCollections: false
+}
+
+const collection = await getCollection(settingOptions)
+const settings = collection.items.find((item: any) => item.name === collection_schema.SETTINGS)
+---
+
+<section class="relative z-100 py-2 md:py-14">
+  <div class="max-w-8xl container relative z-1 mx-auto text-left">
+    <div class="border bg-white p-4 md:p-8 lg:p-12 xl:flex xl:items-center">
+      <div class="xl:-mt-2 xl:w-0 xl:flex-1">
+        {/* title */}
+        <h2 class="font-heading text-2xl font-normal text-gray-900 md:text-4xl">
+          {fieldsModel.title}
+        </h2>
+      </div>
+      <div class="mt-8 sm:max-w-lg xl:ml-8 xl:mt-0">
+        <form
+          name="form1294"
+          class="wufoo sm:flex"
+          accept-charset="UTF-8"
+          autocomplete="off"
+          enctype="multipart/form-data"
+          method="post"
+          action={settings.fields.wufooEmailSignupFormUrl}
+        >
+          <label for="emailAddress" class="sr-only">Email address</label>
+          <input
+            id="Field6"
+            name="Field6"
+            spellcheck="false"
+            type="email"
+            autocomplete="email"
+            maxlength="255"
+            required=""
+            class="w-full border-gray-300 px-5 py-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-700"
+            placeholder="Enter your email"
+          />
+          <button
+            id="saveForm"
+            name="saveForm"
+            type="submit"
+            class="button mt-3 flex w-full border-transparent bg-primary text-white hover:border-transparent hover:bg-primary-600 hover:text-white focus:ring-white focus:ring-offset-primary-600 sm:ml-3 sm:mt-0 sm:w-auto sm:flex-shrink-0"
+            >Subscribe</button
+          >
+
+          <div class="hidden">
+            <label for="comment">Do Not Fill This Out</label>
+            <textarea name="comment" id="comment" rows="1" cols="1"></textarea>
+            <input
+              type="hidden"
+              id="idstamp"
+              name="idstamp"
+              value={settings.fields.wufooEmailSignupFormPassword}
+            />
+            <input type="hidden" id="encryptedPassword" name="encryptedPassword" value="" />
+          </div>
+        </form>
+
+        <p class="mt-3 text-center text-sm text-gray-400">
+          We care about the protection of your data. Read our
+          <a
+            href="/privacy-policy"
+            target="_blank"
+            class="text-secondary-200 font-bold hover:text-gray-600"
+          >
+            Privacy Policy.
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

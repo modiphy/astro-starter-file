@@ -1,0 +1,45 @@
+---
+import * as SocialMedia from '@/socialMediaPlatforms'
+
+import { collection_schema } from '@/constants/page-section'
+import CollectionModel from '@/models/collection-model'
+import { getCollection } from '@/api/flux-collection'
+
+import type { ApiOptions } from '@/types/api-types'
+import ItemModel from '@/models/item-model'
+
+const { schema, className = 'flex space-x-5 justify-center lg:justify-left' } = Astro.props
+
+const socialMediaSchema = schema.find((item: any) => item.name === collection_schema.SOCIAL_MEDIA)
+
+const options: ApiOptions = {
+  id: socialMediaSchema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+  loadChildCollections: false
+}
+
+const { items } = await getCollection(options)
+const filteredItems = items.filter((item: any) => item.fields.active)
+
+type SocialMediaTypes = typeof SocialMedia
+type SocialMediaTypeKeys = keyof SocialMediaTypes
+
+function getSocialMediaComponent(type: SocialMediaTypeKeys): any {
+  return SocialMedia[type]
+}
+---
+
+<div class={className}>
+  {
+    filteredItems?.map((item: any) => {
+      const itemModel = new ItemModel(item)
+      const componentName = itemModel.formatComponentName(itemModel.fields.platform ?? '')
+      const SocialMediaComponent = getSocialMediaComponent(componentName as SocialMediaTypeKeys)
+
+      if (SocialMediaComponent) {
+        return <SocialMediaComponent item={item} textClass="text-gray-400 hover:text-primary" />
+      }
+    })
+  }
+</div>

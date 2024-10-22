@@ -1,0 +1,8 @@
+---
+const { sectionOptions } = Astro.props
+const className = `relative overflow-hidden ${sectionOptions.backgroundColorClass} ${sectionOptions.customClass}`
+---
+
+<section class={className}>
+  <slot />
+</section>

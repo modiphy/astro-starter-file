@@ -1,0 +1,36 @@
+---
+import { Title, TitleInverted } from '@/shared'
+// import PageSectionTitleModel from '@/models/page-section-title-model'
+
+const { fields, divClass, titleOptions } = Astro.props
+---
+
+<div class={divClass}>
+  {
+    titleOptions.titlesInverted === true ? (
+      <TitleInverted fields={fields} titleOptions={titleOptions} />
+    ) : (
+      <>
+        {fields.title && (
+          <Title
+            titleTag={titleOptions.titleTag}
+            titleSize={titleOptions.titleSize}
+            titleClass={titleOptions.titleClass}
+          >
+            {fields.title}
+          </Title>
+        )}
+
+        {fields.subtitle && (
+          <Title
+            titleTag={titleOptions.subtitleTag}
+            titleSize={titleOptions.subtitleSize}
+            titleClass={titleOptions.subtitleClass}
+          >
+            {fields.subtitle}
+          </Title>
+        )}
+      </>
+    )
+  }
+</div>

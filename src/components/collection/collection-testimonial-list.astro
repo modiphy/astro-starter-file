@@ -1,0 +1,29 @@
+---
+import { SectionTestimonial } from '@/shared'
+
+const { items } = Astro.props
+---
+
+{
+  items.length > 0 && (
+    <div class="mx-auto flow-root sm:mt-10 lg:mx-0">
+      <div class="sm:-mx-4 sm:columns-2 sm:text-[0] lg:columns-3">
+        {items?.map((item: any) => (
+          <div class="pt-8 sm:inline-block sm:w-full sm:px-4">
+            <SectionTestimonial
+              item={item}
+              classes={{
+                figure: 'border bg-gray-50 p-8 text-sm leading-6 2xl:p-10',
+                blockquote: 'text-gray-900"',
+                figcaption: 'mt-6 flex items-center gap-x-4',
+                img: 'h-10 w-10 rounded-full bg-gray-50',
+                name: 'font-semibold text-gray-900',
+                title: 'text-gray-600'
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

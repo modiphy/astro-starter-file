@@ -1,0 +1,16 @@
+---
+import { SectionLocationCard } from '@/shared'
+
+const { items } = Astro.props
+const filteredItems = items.filter((item: any) => item.name !== 'Location Info')
+---
+
+{
+  filteredItems.length > 0 && (
+    <div class="relative mt-5 grid gap-3 md:mt-7 md:max-w-none md:grid-cols-2 lg:grid-cols-4">
+      {filteredItems?.map((item: any) => (
+        <SectionLocationCard data={item} />
+      ))}
+    </div>
+  )
+}

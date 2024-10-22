@@ -1,0 +1,22 @@
+---
+import { Img } from '@/shared'
+
+const { classes, item } = Astro.props
+---
+
+{
+  item && (
+    <figure class={classes.figure}>
+      <blockquote class="text-gray-900">
+        <p>“{item.fields.reviewBody}”</p>
+      </blockquote>
+      <figcaption class={classes.figcaption}>
+        <Img image={item.fields.image} imageClass={classes.img} />
+        <div class="leading-snug">
+          <div class={classes.name}>{item.name}</div>
+          <div class={classes.title}>{item.fields.title ?? 'Patient Testimonial'}</div>
+        </div>
+      </figcaption>
+    </figure>
+  )
+}

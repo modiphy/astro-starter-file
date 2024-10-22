@@ -1,0 +1,75 @@
+---
+import { ButtonCustomOutlined, FooterSocialMediaList } from '@/shared'
+
+import LocationModel from '@/models/location-model'
+
+const { location, item, schema } = Astro.props
+
+const locationModel = new LocationModel(location.fields)
+---
+
+<div>
+  <p class="text-lg font-medium uppercase tracking-wide text-primary-400">{item.name}</p>
+  <div class="mt-3 text-gray-600">
+    {
+      item.fields.type === 'address' && (
+        <>
+          <p>{locationModel.address?.address}</p>
+          <p>
+            {locationModel.address?.city}, {locationModel.address?.state}
+          </p>
+
+          {locationModel.googleMapUrl && (
+            <a
+              href={locationModel.googleMapUrl}
+              target="_blank"
+              class="button button-sm mt-2 inline-flex border-gray-300 text-gray-700 hover:border-gray-700 hover:text-gray-900 focus:ring-gray-500 lg:flex"
+            >
+              Get Directions
+            </a>
+          )}
+        </>
+      )
+    }
+
+    {
+      item.fields.type === 'telephone' && (
+        <a href={locationModel.phoneHref} class="hover:text-black">
+          <p>{locationModel.telephone}</p>
+        </a>
+      )
+    }
+
+    {
+      item.fields.type === 'email' && (
+        <a href={locationModel.emailHref} class="hover:text-black">
+          <p>{locationModel.email}</p>
+        </a>
+      )
+    }
+
+    {
+      item.fields.type === 'hours' && (
+        <>
+          <div set:html={locationModel.hours} />
+        </>
+      )
+    }
+
+    {
+      item.fields.type === 'custom' && (
+        <ButtonCustomOutlined
+          button={{
+            ...item.fields.button,
+            buttonPageLink: item.fields.buttonPageLink ?? undefined
+          }}
+          buttonClass="mt-2 button button-sm inline-flex border-gray-300 text-gray-700 hover:border-gray-700 hover:text-gray-900 focus:ring-gray-500 lg:flex"
+        >
+          {item.fields.button.text}
+        </ButtonCustomOutlined>
+      )
+    }
+
+    {item.fields.type === 'social' && <FooterSocialMediaList schema={schema} />}
+  </div>
+</div>

@@ -1,0 +1,45 @@
+---
+import * as ButtonType from '@/shared'
+
+type buttonTypes = typeof ButtonType
+type buttonTypeKeys = keyof buttonTypes
+
+function getButtonComponent(type: buttonTypeKeys): any {
+  return ButtonType[type]
+}
+
+const { fields, buttonOptions, divClass = 'mt-6' } = Astro.props
+
+const filteredItems = Object.entries(fields)
+  .filter(([key, value]) => key === 'button' || key.startsWith('button-'))
+  .map(([key, value]) => {
+    const number = key.startsWith('button-') ? key.split('-')[1] : null
+    const buttonPageLink = fields[`buttonPageLink-${number}`] ?? fields.buttonPageLink
+    const options = buttonOptions[`button-${number}`] ?? buttonOptions.button
+
+    return { data: Object.assign({}, value, { buttonPageLink }), options }
+  })
+---
+
+{
+  filteredItems.length > 0 && (
+    <div class={divClass}>
+      {filteredItems?.map((item: any) => {
+        const ButtonType = getButtonComponent(item.options.componentType)
+
+        if (ButtonType) {
+          return (
+            <ButtonType
+              button={{
+                ...item.data
+              }}
+              buttonClass={item.options.className}
+            >
+              {item.data.text}
+            </ButtonType>
+          )
+        }
+      })}
+    </div>
+  )
+}

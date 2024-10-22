@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro'
+import * as SectionComponent from '@/sections'
+
+import CollectionModel from '@/models/collection-model'
+import ItemModel from '@/models/item-model'
+
+import { getCollection } from '@/api/flux-collection'
+import type { ApiOptions } from '@/types/api-types'
+import { collection_schema } from '@/constants/page-section'
+
+type componentTypes = typeof SectionComponent
+type componentTypeKeys = keyof componentTypes
+
+function getComponent(type: componentTypeKeys): any {
+  return SectionComponent[type]
+}
+
+export async function getStaticPaths() {
+  const schemaOptions: ApiOptions = {
+    fields: 'id,name,parentId',
+    loadChildCollections: false
+  }
+
+  const schema = await getCollection(schemaOptions)
+
+  const navSchema = schema.find((item: any) => item.name === collection_schema.NAVIGATION)
+  const legalNavigationSchema = schema.find(
+    (item: any) => item.name === collection_schema.LEGAL_NAVIGATION
+  )
+  const freeStandingSchema = schema.find(
+    (item: any) => item.name === collection_schema.FREE_STANDING_PAGE
+  )
+
+  // for britt hill
+  const landingSchema = schema.find((item: any) => item.name === collection_schema.LANDING_PAGE)
+
+  const options: ApiOptions = {
+    id: [navSchema.id, legalNavigationSchema.id, freeStandingSchema.id, landingSchema.id],
+    model: CollectionModel,
+    fields: 'id,parentId,name,type,items{id,parentId,name,sectionCollection,fields}',
+    loadChildCollections: false
+  }
+
+  const collection = await getCollection(options)
+
+  const navigation = collection.find((item: any) => item.name === collection_schema.NAVIGATION)
+  const legalNavigation = collection.find(
+    (item: any) => item.name === collection_schema.LEGAL_NAVIGATION
+  )
+  const freeStanding = collection.find(
+    (item: any) => item.name === collection_schema.FREE_STANDING_PAGE
+  )
+
+  // for britt hill
+  const landingPage = collection.find((item: any) => item.name === collection_schema.LANDING_PAGE)
+
+  const navigationPages = [
+    ...navigation.items,
+    ...legalNavigation.items,
+    ...freeStanding.items,
+    ...landingPage.items // for britt hill
+  ]?.map((item: ItemModel) => {
+    const temp = new ItemModel(item)
+    let slug = temp.slug
+
+    if (temp.parentId !== 0) {
+      const parent = new ItemModel(navigation.items.find((i: ItemModel) => i.id === temp.parentId))
+
+      slug = `${parent.slug}/${slug}`
+
+      if (parent.parentId !== 0) {
+        const grandParent = new ItemModel(
+          navigation.items.find((i: ItemModel) => i.id === parent.parentId)
+        )
+
+        slug = `${grandParent.slug}/${slug}`
+      }
+    }
+
+    if (slug === 'home') {
+      slug = ''
+    }
+
+    return {
+      params: { slug },
+      props: { data: temp, navigation, ourTeam: false }
+    }
+  })
+
+  return [...navigationPages]
+}
+
+const { data, navigation } = Astro.props
+const { slug } = Astro.params
+
+const page = new ItemModel(data)
+
+const options: ApiOptions = {
+  id: page.sectionCollection,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+  loadChildCollections: true
+}
+
+const { items } = await getCollection(options)
+const filteredItems = items.filter((item: ItemModel) => item.fields.active)
+---
+
+<Layout page={page} navigation={navigation} slug={slug}>
+  <main>
+    {
+      filteredItems?.map((section: ItemModel, index: number) => {
+        const temp = new ItemModel(section)
+        const Section = getComponent(temp.sectionType as componentTypeKeys)
+
+        if (Section) {
+          return <Section fields={temp.fields} sectionCount={index} />
+        }
+      })
+    }
+  </main>
+</Layout>

@@ -1,0 +1,21 @@
+---
+import { SectionVideoList } from '@/shared'
+
+const { items } = Astro.props
+---
+
+{
+  items.length > 0 && (
+    <div class="mx-auto lg:text-center">
+      {items.map((item: any) => (
+        <div class="mt-8">
+          <p class="text-center text-2xl font-semibold uppercase tracking-wide text-primary-600">
+            {item.name}
+          </p>
+
+          <SectionVideoList item={item} />
+        </div>
+      ))}
+    </div>
+  )
+}

@@ -1,0 +1,33 @@
+---
+import { Title } from '@/shared'
+
+const { fields, titleOptions } = Astro.props
+---
+
+<>
+  {
+    fields.title && (
+      <Title
+        titleTag={titleOptions.titleTag}
+        titleSize={titleOptions.subtitleSize}
+        titleClass={titleOptions.subtitleClass}
+        textAlign={titleOptions.textAlign}
+      >
+        {fields.title}
+      </Title>
+    )
+  }
+
+  {
+    fields.subtitle && (
+      <Title
+        titleTag={titleOptions.subtitleTag}
+        titleSize={titleOptions.titleSize}
+        titleClass={titleOptions.titleClass}
+        textAlign={titleOptions.textAlign}
+      >
+        {fields.subtitle}
+      </Title>
+    )
+  }
+</>

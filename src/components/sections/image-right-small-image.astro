@@ -1,0 +1,43 @@
+---
+import { ImageRight } from '@/sections'
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+
+const { fields, sectionCount = 0 } = Astro.props
+const fieldsModel = new PageSectionFieldsModel(fields, sectionCount)
+
+const options = {
+  sectionOptions: {
+    ...fieldsModel.sectionOptions,
+    backgroundColorClass: 'bg-tertiary'
+  },
+  titleOptions: {
+    ...fieldsModel.titleOptions,
+    titleClass: 'font-heading font-black text-white'
+  },
+  bodyOptions: {
+    ...fieldsModel.bodyOptions,
+    bodySize: 'prose-md md:prose-lg text-white',
+    extraBodySize: 'prose-md md:prose-lg text-white'
+  }
+}
+
+const classes = {
+  mainDiv: 'items-start grid lg:gap-12 xl:gap-16 2xl:gap-20 xl:grid-cols-12',
+  textDiv: 'xl:col-span-7 row-start-1 mt-4 lg:mt-0',
+  image: {
+    mainDiv: 'xl:col-span-5',
+    subDiv: '',
+    class: 'shadow-md',
+    width: 1500,
+    height: 1500
+  }
+}
+---
+
+<ImageRight
+  fields={fields}
+  sectionCount={sectionCount}
+  detachedTitle={false}
+  classes={classes}
+  options={options}
+/>

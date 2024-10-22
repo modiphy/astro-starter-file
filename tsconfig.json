@@ -1,3 +1,31 @@
 {
-  "extends": "astro/tsconfigs/strict"
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/components/*": ["./src/components/*"],
+      "@/sections": ["./src/components/sections"],
+      "@/shared": ["./src/components/shared"],
+      "@/collection": ["./src/components/collection"],
+      "@/title-tags": ["./src/components/shared/title-tags"],
+      "@/layouts/*": ["./src/layouts/*"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/css/*": ["./src/assets/css/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/models/*": ["./src/models/*"],
+      "@/constants/*": ["./src/constants/*"],
+      "@/api/*": ["./src/api/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/socialMediaPlatforms": [
+        "./src/components/shared/social-media-platforms"
+      ],
+      "@/reactComponentsLayout": ["./src/components/react-components/layout"],
+      "@/reactComponents": ["./src/components/react-components/components"]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

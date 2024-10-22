@@ -7,11 +7,37 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "resource:astro": "npx astro add alpinejs sitemap tailwind vercel react",
+    "resource:dev": "npm i --save-dev moment @tailwindcss/aspect-ratio @tailwindcss/forms @tailwindcss/typography eslint eslint-plugin-astro prettier prettier-plugin-astro prettier-plugin-tailwindcss"
   },
   "dependencies": {
-    "astro": "^4.16.6",
+    "@astrojs/alpinejs": "^0.4.0",
     "@astrojs/check": "^0.9.4",
+    "@astrojs/react": "^3.6.2",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.2",
+    "@astrojs/vercel": "^7.8.2",
+    "@types/alpinejs": "^3.13.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "alpinejs": "^3.14.3",
+    "astro": "^4.16.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "starter-files": "file:",
+    "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "eslint": "^9.13.0",
+    "eslint-plugin-astro": "^1.3.0",
+    "moment": "^2.30.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.6.8"
   }
 }

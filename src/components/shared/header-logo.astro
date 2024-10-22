@@ -1,0 +1,11 @@
+---
+import { imageAlt } from '@/constants/logos'
+import type { LogoProps } from '@/types/props'
+
+const { src, imageClass = 'h-8 w-8', hrefClass = '' }: LogoProps = Astro.props
+---
+
+<a href="/" class={hrefClass}>
+  <span class="sr-only">{imageAlt.title}</span>
+  <img class={imageClass} src={src} alt={imageAlt.alt} />
+</a>

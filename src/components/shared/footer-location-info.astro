@@ -1,0 +1,45 @@
+---
+import { FooterLocation } from '@/shared'
+
+import { collection_schema } from '@/constants/page-section'
+import CollectionModel from '@/models/collection-model'
+import { getCollection } from '@/api/flux-collection'
+
+import type { ApiOptions } from '@/types/api-types'
+
+const { schema } = Astro.props
+
+const footerLocationInfoSchema = schema.find(
+  (item: any) => item.name === collection_schema.FOOTER_LOCATION_INFO
+)
+const locationSchema = schema.find((item: any) => item.name === collection_schema.LOCATION)
+
+const options: ApiOptions = {
+  id: [footerLocationInfoSchema.id, locationSchema.id],
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+  loadChildCollections: false
+}
+
+const collections = await getCollection(options)
+
+// for location
+const location = collections.find(
+  (collection: CollectionModel) => collection.name === collection_schema.LOCATION
+)
+
+// for location info
+const { items } = collections.find(
+  (collection: CollectionModel) => collection.name === collection_schema.FOOTER_LOCATION_INFO
+)
+
+const activeItems = items.filter((item: any) => item.fields.active)
+---
+
+<div class="space-y-5 lg:flex lg:justify-between lg:space-y-0">
+  {
+    activeItems?.map((item: any) => (
+      <FooterLocation item={item} location={location.items[0]} schema={schema} />
+    ))
+  }
+</div>

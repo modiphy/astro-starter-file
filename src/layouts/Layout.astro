@@ -1,50 +1,71 @@
 ---
-interface Props {
-	title: string;
-}
+import '@/css/global.css'
 
-const { title } = Astro.props;
+// components
+import Header from './header.astro'
+import Head from './head.astro'
+import CallToAction from './call-to-action.astro'
+import Footer from './footer.astro'
+
+// api
+import { collection_schema } from '@/constants/page-section'
+import { getCollection } from '@/api/flux-collection'
+
+// types, props, options
+import { schemaOptions } from '@/types/options'
+import type { LayoutProps } from '@/types/props'
+
+const schema = await getCollection(schemaOptions)
+
+const settingSchema = schema.find((item: any) => item.name === collection_schema.SETTINGS)
+
+const { page, navigation, slug }: LayoutProps = Astro.props
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <Head page={page} slug={slug} settingSchema={settingSchema} />
+
+  <body class="antialiased xl:flex">
+    <Header navigation={navigation} schema={schema} />
+
+    <div class="xl:flex xl:flex-grow">
+      <div class="mx-auto w-full max-w-[1800px]">
+        <slot />
+
+        <div class="relative overflow-hidden">
+          {
+            !page?.fields?.hideCallToActionSections && (
+              <CallToAction
+                callToActionSchema={schema.find(
+                  (item: any) => item.name === collection_schema.FOOTER_CALL_TO_ACTION
+                )}
+              />
+            )
+          }
+
+          {
+            !page?.fields?.hideFooter && (
+              <Footer
+                schema={schema}
+                navigation={navigation?.items}
+                hideFooterLocationInfo={page?.fields?.hideFooterLocationInfo}
+              />
+            )
+          }
+
+          <div
+            class="absolute inset-0 bg-fixed"
+            style={{
+              backgroundImage: `url(https://fluxconsole.com/files/item/1334/173956/pattern-purple.svg})`,
+              backgroundRepeat: 'repeat',
+              backgroundSize: '20rem',
+              backgroundPosition: 'right center'
+            }}
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
-<style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #13151a;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
-</style>

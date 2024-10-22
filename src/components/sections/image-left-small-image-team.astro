@@ -1,0 +1,56 @@
+---
+import { Img } from '@/shared'
+import { SectionLayout, ContainerLayout } from '@/components/layouts'
+
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+
+// props from astro
+const { data, sectionCount = 0 } = Astro.props
+
+const fieldsModel = new PageSectionFieldsModel(data.fields, sectionCount)
+
+// options for default classes and styles
+const sectionOptions = fieldsModel.sectionOptions
+const containerOptions = { ...fieldsModel.containerOptions, containerWidth: 'max-w-screen-xl' }
+---
+
+<SectionLayout sectionOptions={sectionOptions}>
+  <ContainerLayout containerOptions={containerOptions}>
+    <div class="relative mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12 xl:grid-cols-12">
+      {
+        fieldsModel.image && !fieldsModel.video && (
+          <div class="mx-auto xl:col-span-4">
+            <figure class="">
+              <Img
+                image={fieldsModel.image}
+                imageClass="relative z-1 object-center rounded-xl shadow-md"
+                width="1500"
+                heigth="1500"
+              />
+            </figure>
+          </div>
+        )
+      }
+
+      <div class="relative mt-4 lg:mt-0 xl:col-span-8">
+        {
+          fieldsModel.title && (
+            <h2 class="font-heading text-4xl font-semibold text-gray-900 md:text-5xl xl:text-6xl">
+              {fieldsModel.title}
+            </h2>
+          )
+        }
+
+        {
+          fieldsModel.subtitle && (
+            <p class="text-lg font-semibold uppercase tracking-wide text-primary-600 md:text-xl">
+              {fieldsModel.subtitle}
+            </p>
+          )
+        }
+
+        {fieldsModel.body && <div class="prose prose-lg mt-6" set:html={fieldsModel.body} />}
+      </div>
+    </div>
+  </ContainerLayout>
+</SectionLayout>

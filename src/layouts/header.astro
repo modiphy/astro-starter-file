@@ -1,0 +1,121 @@
+---
+import { HeaderLogo, NavigationItemsDesktop, NavigationItemsMobile } from '@/shared'
+import { logos } from '@/constants/logos'
+
+const { navigation, schema } = Astro.props
+const { items } = navigation
+const showNavs = items.filter((item: any) => item.fields.showInNavigation)
+const parentNav = showNavs.filter((item: any) => item.parentId === 0)
+---
+
+<header id="header" x-data="{ mobileMenuOpen: false }">
+  <aside
+    class="relative sticky top-0 hidden h-screen w-[260px] flex-col border-r bg-white xl:flex xl:flex-shrink-0"
+  >
+    <div class="absolute inset-x-0 -left-10 bottom-0">
+      <img
+        src="https://fluxconsole.com/files/item/1334/173954/nav-pattern.svg"
+        alt="britt hill"
+        height={500}
+        width={500}
+      />
+    </div>
+
+    <HeaderLogo
+      src={logos.desktop}
+      hrefClass="mt-8 flex w-full justify-center"
+      imageClass="h-40 w-auto"
+    />
+
+    <div class="relative z-10 mt-10 w-full overflow-auto">
+      <NavigationItemsDesktop parentNav={parentNav} showNavs={showNavs} />
+    </div>
+  </aside>
+
+  <div class="relative sticky top-0 z-1000 bg-white xl:hidden">
+    <div class="sticky top-0 z-1000 w-full">
+      <div class="container flex max-w-screen-2xl items-center justify-between bg-white py-4">
+        <HeaderLogo src={logos.mobile} hrefClass="xl:flex xl:pb-2" imageClass="h-14 w-auto" />
+        <div class="flex items-end justify-end xl:flex-col">
+          <div class="flex items-center">
+            <div class="ml-8 hidden space-x-3 md:flex">
+              <a
+                href="/contact"
+                class="button inline-flex border-primary text-gray-700 hover:bg-primary hover:text-white focus:ring-primary"
+              >
+                Get Started
+              </a>
+            </div>
+          </div>
+          <div class="ml-6 xl:hidden">
+            <button
+              @click="mobileMenuOpen = true"
+              type="button"
+              class="inline-flex items-center justify-center border-2 p-2 text-gray hover:border-gray focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-600"
+            >
+              <span class="sr-only">Open menu</span>
+              <svg
+                class="h-6 w-6"
+                x-description="Heroicon name: outline/menu"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="mobileMenuOpen"
+        x-transition:enter="duration-200 ease-out"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="duration-100 ease-in"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute inset-x-0 top-0 z-10 origin-top-right transform p-2 transition xl:hidden"
+        style="display: none;"
+      >
+        <div class="overflow-hidden bg-white shadow-md ring-1 ring-black ring-opacity-5">
+          <div class="flex items-center justify-between px-5 pt-4">
+            <HeaderLogo src={logos['mobile-modal']} imageClass="h-12 w-auto" />
+
+            <div class="-mr-2">
+              <button
+                type="button"
+                @click="mobileMenuOpen = false"
+                class="focus:ring-indigo-500 inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset"
+              >
+                <span class="sr-only">Close menu</span>
+                <!-- Heroicon name: outline/x -->
+                <svg
+                  class="h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <NavigationItemsMobile parentNav={parentNav} showNavs={showNavs} />
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,132 @@
+---
+import { SectionTitles, SectionBodies, SectionButtons, Img } from '@/shared'
+import { SectionLayout, ContainerLayout } from '@/components/layouts'
+import * as CollectionComponent from '@/collection'
+
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+import CollectionModel from '@/models/collection-model'
+
+import { getCollection } from '@/api/flux-collection'
+import type { ApiOptions } from '@/types/api-types'
+
+// for dynamic content collection components
+type componentTypes = typeof CollectionComponent
+type componentTypeKeys = keyof componentTypes
+
+function getSharedComponent(type: componentTypeKeys): any {
+  return CollectionComponent[type]
+}
+
+// props from astro
+const {
+  fields,
+  sectionCount = 0,
+  collectionComponent = undefined,
+  options = undefined
+} = Astro.props
+
+const fieldsModel = new PageSectionFieldsModel(fields, sectionCount)
+
+// options for default classes and styles
+const sectionOptions = options?.sectionOptions ? options.sectionOptions : fieldsModel.sectionOptions
+const containerOptions = options?.containerOptions
+  ? options.containerOptions
+  : fieldsModel.containerOptions
+const titleOptions = options?.titleOptions ? options.titleOptions : fieldsModel.titleOptions
+const bodyOptions = options?.bodyOptions ? options.bodyOptions : fieldsModel.bodyOptions
+const buttonOptions = options?.buttonOptions ? options.buttonOptions : fieldsModel.buttonOptions
+const otherOptions = options?.otherOptions ? options.otherOptions : fieldsModel.otherOptions
+
+// for content collection
+let activeItems = []
+let Component = undefined
+let allItems = []
+
+if (fields.contentCollection) {
+  const options: ApiOptions = {
+    id: fields.contentCollection,
+    model: CollectionModel,
+    fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+    loadChildCollections: true
+  }
+
+  const { items } = await getCollection(options)
+  allItems = items
+  activeItems = items.filter((item: any) => item.fields.active)
+
+  if (fields.limitCollectionItems) {
+    activeItems = activeItems.slice(0, fields.limitCollectionItems)
+  }
+
+  if (collectionComponent) {
+    Component = getSharedComponent(collectionComponent as componentTypeKeys)
+  } else {
+    Component = getSharedComponent('CollectionGridList' as componentTypeKeys)
+  }
+}
+---
+
+<SectionLayout sectionOptions={sectionOptions}>
+  <ContainerLayout containerOptions={containerOptions}>
+    <div class={otherOptions.subContainer}>
+      <div>
+        <SectionTitles fields={fieldsModel} titleOptions={titleOptions} />
+
+        <SectionBodies fields={fieldsModel} bodyOptions={bodyOptions} />
+      </div>
+
+      {
+        fieldsModel.videoUrl && (
+          <div class="relative mt-6">
+            <figure class="aspect-h-9 aspect-w-16 relative h-full xl:aspect-h-2 xl:aspect-w-3 md:-mx-8 xl:mx-0">
+              <iframe
+                class="object-end bg-secondary-800 absolute inset-0 h-full w-full rounded-2xl object-cover shadow-2xl"
+                src={fieldsModel.videoUrl}
+                allowfullscreen=""
+                data-gtm-yt-inspected-3="true"
+                data-gtm-yt-inspected-15="true"
+              />
+            </figure>
+          </div>
+        )
+      }
+
+      {
+        fieldsModel.image && !fieldsModel.video && (
+          <div class="relative mt-6">
+            <figure class="h-full w-full">
+              <Img image={fieldsModel.image} imageClass="w-full h-full shadow-2xl" />
+            </figure>
+          </div>
+        )
+      }
+    </div>
+
+    {
+      collectionComponent === 'CollectionNavigationCard' && (
+        <Component items={allItems} fields={fieldsModel} />
+      )
+    }
+
+    {
+      fields.contentCollection && activeItems.length > 0 && Component && (
+        <Component items={activeItems} fields={fieldsModel} />
+      )
+    }
+
+    {
+      fieldsModel.button && (
+        <div class="py-14 text-center">
+          <SectionButtons
+            fields={fieldsModel}
+            buttonOptions={buttonOptions}
+            divClass="mx-auto"
+            buttonOptions={{
+              button: { componentType: 'ButtonPrimary', className: 'mx-auto' }
+            }}
+          />
+        </div>
+      )
+    }
+  </ContainerLayout>
+</SectionLayout>

@@ -1,0 +1,19 @@
+---
+const { data } = Astro.props
+const { fields } = data
+---
+
+{
+  data && (
+    <div class="flex-wrap px-4 md:flex md:w-1/2 lg:w-1/3">
+      <p class="mx-auto text-center text-lg font-medium">{data.name}</p>
+      <div class="h-[300px] w-[300px] lg:w-[600px]">
+        <iframe
+          class="block h-full w-full rounded-lg object-cover object-center"
+          src={fields.videoUrl}
+          allowfullscreen
+        />
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,25 @@
+---
+import { Default } from '@/sections'
+import PageSectionFieldsModel from '@/models/page-section-fields-model'
+
+const { fields, sectionCount = 0 } = Astro.props
+
+const fieldsModel = new PageSectionFieldsModel(fields, sectionCount)
+
+const options = {
+  containerOptions: { ...fieldsModel.containerOptions, textAlign: 'text-center' },
+  otherOptions: { ...fieldsModel.otherOptions, subContainer: 'mx-auto' },
+  bodyOptions: {
+    ...fieldsModel.bodyOptions,
+    bodyClass: 'mt-6 mx-auto',
+    extraBodyClass: 'mt-6 mx-auto'
+  }
+}
+---
+
+<Default
+  fields={fields}
+  sectionCount={sectionCount}
+  options={options}
+  collectionComponent="CollectionAccordion"
+/>

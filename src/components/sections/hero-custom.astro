@@ -1,0 +1,53 @@
+---
+import { SectionTitles, SectionBodies, ButtonText } from '@/shared'
+import { SectionLayout, ContainerLayout } from '@/components/layouts'
+
+import PageHeroSectionFieldsModel from '@/models/page-hero-section-fields-model'
+
+const { fields } = Astro.props
+
+const fieldsModel = new PageHeroSectionFieldsModel(fields)
+
+const sectionOptions = { ...fieldsModel.sectionOptions, customClass: 'w-full lg:h-[100vh]' }
+const containerOptions = fieldsModel.containerOptions
+const titleOptions = fieldsModel.titleOptions
+const bodyOptions = fieldsModel.bodyOptions
+const buttonOptions = fieldsModel.buttonOptions
+---
+
+<section class="relative w-full bg-white lg:h-[100vh]">
+  <div class="relative h-full xl:w-full">
+    <div class="block h-[30vh] w-full md:h-[50vh] lg:absolute lg:inset-0 lg:h-full">
+      {
+        fieldsModel.video && (
+          <figure class="h-full w-full">
+            <video class="h-full w-full object-cover object-center" playsinline autoplay muted loop>
+              <source src={fieldsModel.video.videoUrl} type="video/mp4" />
+            </video>
+          </figure>
+        )
+      }
+    </div>
+
+    <div
+      class="bottom-0 left-0 z-1 block w-full flex-col justify-between bg-primary px-6 py-6 lg:absolute lg:flex lg:max-w-[850px] lg:px-10 lg:py-12"
+    >
+      <SectionTitles fields={fieldsModel} titleOptions={titleOptions} />
+
+      <SectionBodies fields={fieldsModel} bodyOptions={bodyOptions} />
+
+      {
+        fieldsModel.button && (
+          <div class="relative z-1000 mt-4 flex space-y-2 lg:mt-8">
+            <ButtonText
+              buttonClass="button-outlined inline-flex border-white text-white hover:bg-white hover:text-gray-700 text-base"
+              button={{ ...fieldsModel.button, buttonPageLink: fieldsModel.buttonPageLink }}
+            >
+              {fieldsModel.button.text}
+            </ButtonText>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

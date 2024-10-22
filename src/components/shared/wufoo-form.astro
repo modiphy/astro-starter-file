@@ -1,0 +1,18 @@
+---
+const { embed } = Astro.props
+---
+
+<div class="mt-6 grid justify-items-center lg:mt-0 lg:justify-items-center">
+  <div
+    class="relative min-h-[399px] w-full max-w-[600px] rounded-lg bg-gray-50 lg:max-w-2xl lg:max-w-lg"
+  >
+    <div class="px-6 pt-6">
+      <div set:html={embed} />
+    </div>
+    <p class="abosulute m-0 rounded-b-xl border bg-gray-100 p-0 py-7 text-center text-xs">
+      We care about protecting your data. Read our <strong
+        ><a href="/privacy-policy" target="_blank">Privacy Policy.</a></strong
+      >
+    </p>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+---
+import { Body } from '@/shared'
+
+const { fields, bodyOptions, divClass = '' } = Astro.props
+---
+
+<div class={divClass}>
+  {
+    fields.body && (
+      <Body body={fields.body} size={bodyOptions.bodySize} bodyClass={bodyOptions.bodyClass} />
+    )
+  }
+
+  {
+    fields.extraBody && (
+      <Body
+        body={fields.extraBody}
+        size={bodyOptions.extraBodySize}
+        bodyClass={bodyOptions.extraBodyClass}
+      />
+    )
+  }
+</div>

@@ -1,0 +1,77 @@
+---
+import { default_metadata } from '@/constants/page-section'
+import { collection_schema } from '@/constants/page-section'
+import type { ApiOptions } from '@/types/api-types'
+import { getGeneralInfo, getCollection } from '@/api/flux-collection'
+import CollectionModel from '@/models/collection-model'
+import type { HeadProps } from '@/types/props'
+
+const { page, slug, settingSchema }: HeadProps = Astro.props
+
+const settingOptions: ApiOptions = {
+  id: settingSchema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,sectionCollection,fields}',
+  loadChildCollections: false
+}
+
+const collection = await getCollection(settingOptions)
+const settings = collection.items.find((item: any) => item.name === collection_schema.SETTINGS)
+
+const generalInfo = await getGeneralInfo()
+
+const title = page?.fields?.metaTitle || generalInfo.defaultMetaTitle
+
+const metadatas = {
+  title: page?.name === 'Home' ? title : `${page?.name} - ${title}`,
+  description: page?.fields?.metaDescription || default_metadata.description,
+  ogImage: page?.fields?.ogImage ? page?.fields?.ogImage.imageUrl : default_metadata.ogImage,
+  url: slug ? `${generalInfo.url}${slug}` : generalInfo.url,
+  site_name: generalInfo.organizationName
+}
+
+const googleTag = `
+<script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=${generalInfo.analyticsId}" async></script>
+<script id="gtag-init" data-nscript="afterInteractive">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', ${generalInfo.analyticsId}, {
+      page_path: window.location.pathname,
+    });
+  </script>
+  `
+---
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>{metadatas.title}</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+  <meta name="msapplication-TileColor" content="#ffffff" />
+  <meta name="theme-color" content="#ffffff" />
+  <!-- <meta name="google-site-verification" content="TtFsTn5cVD4CYG0jC9NV-w2bmLgmoLIQ3pBOWWvfMKA" /> -->
+  <meta name="generator" content={Astro.generator} />
+
+  <link rel="canonical" href={metadatas.url} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+
+  <meta name="description" content={metadatas.description} />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+
+  <meta property="og:title" content={metadatas.title} />
+  <meta property="og:description" content={metadatas.description} />
+  <meta property="og:url" content={metadatas.url} />
+  <meta property="og:site_name" content={metadatas.site_name} />
+  <meta property="og:image" content={metadatas.ogImage} />
+
+  <Fragment set:html={googleTag} />
+  <Fragment set:html={settings.fields.headScripts} />
+</head>

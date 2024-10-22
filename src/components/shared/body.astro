@@ -1,0 +1,7 @@
+---
+const { body, size, bodyClass } = Astro.props
+
+const combineClass = `${size} ${bodyClass}`
+---
+
+<div class={combineClass} set:html={body} />

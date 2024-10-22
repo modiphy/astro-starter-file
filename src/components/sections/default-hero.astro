@@ -1,0 +1,39 @@
+---
+import { Img } from '@/shared'
+
+const { data } = Astro.props
+
+const bgImage = data?.fields?.image?.ImageUrl
+  ? data?.fields?.image?.ImageUrl
+  : 'https://static.wixstatic.com/media/fb11a5_9a7cea260f75408990d5e93b73d33cc8~mv2.jpg'
+---
+
+<section class="relative w-full pt-16 lg:h-[70vh] xl:pt-0">
+  <div class="relative xl:h-full xl:w-full">
+    <figure class="aspect-h-9 aspect-w-16 xl:hidden">
+      <Img
+        image={{
+          imageUrl: bgImage,
+          altText: 'Britt Hill'
+        }}
+        imageClass="absolute left-0 top-0 h-full w-full object-cover object-center"
+      />
+    </figure>
+
+    <figure>
+      <Img
+        image={{
+          imageUrl: bgImage,
+          altText: 'Britt Hill'
+        }}
+        imageClass="absolute left-0 top-0 hidden h-full w-full object-cover object-center xl:block"
+      />
+    </figure>
+
+    <div
+      class="relative left-0 z-1 flex w-full flex-col bg-primary px-8 py-10 lg:justify-between xl:absolute xl:bottom-0 xl:max-w-[850px]"
+    >
+      <h1 class="font-heading text-3xl text-white md:text-6xl">{data.name}</h1>
+    </div>
+  </div>
+</section>

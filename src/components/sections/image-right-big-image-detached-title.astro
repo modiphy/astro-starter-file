@@ -1,0 +1,25 @@
+---
+import { ImageRight } from '@/sections'
+
+const { fields, sectionCount = 0 } = Astro.props
+
+const classes = {
+  mainDiv: 'mt-6 grid gap-8 lg:grid-cols-2 xl:grid-cols-12',
+  textDiv: 'xl:col-span-5 lg:row-start-1',
+  image: {
+    mainDiv: 'xl:col-span-7',
+    subDiv: 'aspect-w-16 aspect-h-9 relative z-1 overflow-hidden',
+    class: 'h-full w-full object-cover object-center shadow-md'
+  }
+}
+---
+
+<ImageRight
+  fields={fields}
+  sectionCount={sectionCount}
+  detachedTitle={true}
+  classes={classes}
+  dividerSvg={true}
+  imageSvgLeft={false}
+  imageSvgTopRight={false}
+/>

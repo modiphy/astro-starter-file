@@ -1,0 +1,8 @@
+---
+const { containerOptions } = Astro.props
+const className = `${containerOptions.containerWidth} ${containerOptions.textAlign} ${containerOptions.padding} ${containerOptions.customClass}`
+---
+
+<div class={className}>
+  <slot />
+</div>

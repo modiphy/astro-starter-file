@@ -1,0 +1,26 @@
+---
+import type { ButtonType } from '@/types/section-button-types'
+import ButtonModel from '@/models/button-model'
+
+interface Props {
+  buttonClass?: string
+  button: ButtonType
+  slug?: string
+}
+
+const { buttonClass = '', button, slug = '' }: Props = Astro.props
+const buttonModel = new ButtonModel(button)
+let url = button.url ? button.url : slug
+
+if (button.buttonPageLink) {
+  url = (await buttonModel.getUrl()) || ''
+}
+---
+
+{
+  url && (
+    <a class={`button ${buttonClass}`} href={url} target={buttonModel.target}>
+      <slot />
+    </a>
+  )
+}

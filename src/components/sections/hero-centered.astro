@@ -1,0 +1,14 @@
+---
+import { HeroBanner } from '@/sections'
+import PageHeroSectionFieldsModel from '@/models/page-hero-section-fields-model'
+
+const { fields, sectionCount = 0 } = Astro.props
+const fieldsModel = new PageHeroSectionFieldsModel(fields)
+
+const options = {
+  containerOptions: { ...fieldsModel.containerOptions, textAlign: 'text-center' },
+  otherOptions: { ...fieldsModel.otherOptions, subContainer: 'grid items-center justify-center' }
+}
+---
+
+<HeroBanner fields={fields} sectionCount={sectionCount} options={options} />

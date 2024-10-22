@@ -1,0 +1,17 @@
+---
+import * as TitleTags from '@/title-tags'
+
+const { titleTag, titleClass, titleSize } = Astro.props
+
+type tagTypes = typeof TitleTags
+type tagTypeKeys = keyof tagTypes
+
+function getTagComponent(type: tagTypeKeys): any {
+  return TitleTags[type]
+}
+
+const TitleTag = getTagComponent(titleTag)
+const combineClass = `${titleClass} ${titleSize}`
+---
+
+<TitleTag comboneClass={combineClass}><slot /></TitleTag>

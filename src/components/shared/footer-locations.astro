@@ -1,0 +1,40 @@
+---
+import { FooterLocationCard } from '@/shared'
+import { collection_schema } from '@/constants/page-section'
+import CollectionModel from '@/models/collection-model'
+import { getCollection } from '@/api/flux-collection'
+
+import type { ApiOptions } from '@/types/api-types'
+
+const { schema } = Astro.props
+
+const locationSchema = schema.find((item: any) => item.name === collection_schema.LOCATION)
+
+const options: ApiOptions = {
+  id: locationSchema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,fields}',
+  loadChildCollections: false
+}
+
+const { items } = await getCollection(options)
+
+const filteredItems = items.filter(
+  (item: any) => item.fields.active && item.name !== 'Location Info'
+)
+---
+
+{
+  filteredItems.length > 0 && (
+    <div>
+      <p class="text-center font-heading text-4xl font-semibold text-white md:text-5xl xl:text-6xl">
+        Our Offices
+      </p>
+      <div class="mt-6 grid gap-3 md:grid-cols-2">
+        {filteredItems?.map((item: any) => (
+          <FooterLocationCard item={item} />
+        ))}
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,17 @@
+---
+import { ItemIcon } from '@/shared'
+
+const { items } = Astro.props
+---
+
+{
+  items.length > 0 && (
+    <div class="mx-auto mt-16">
+      <dl class="grid grid-cols-1 items-center justify-center gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+        {items?.map((item: any) => (
+          <ItemIcon item={item} />
+        ))}
+      </dl>
+    </div>
+  )
+}

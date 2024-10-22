@@ -1,0 +1,35 @@
+---
+import { getCollection } from '@/api/flux-collection'
+import type { ApiOptions } from '@/types/api-types'
+import CollectionModel from '@/models/collection-model'
+import { ButtonPrimary } from '@/shared'
+
+const { schema } = Astro.props
+
+const options: ApiOptions = {
+  id: schema.id,
+  model: CollectionModel,
+  fields: 'id,parentId,name,type,items{id,parentId,name,sectionCollection,fields}',
+  loadChildCollections: false
+}
+
+const { items } = await getCollection(options)
+
+const primaryButtons = items.filter((item: any) => item.fields.buttonType === 'button-primary')
+---
+
+<div class="mt-6 pb-4">
+  {
+    primaryButtons?.map((item: any) => (
+      <ButtonPrimary
+        button={{
+          ...item.fields.button,
+          buttonPageLink: item.fields.buttonPageLink
+        }}
+        buttonClass="text-center text-base uppercase font-heading"
+      >
+        {item.fields.button ? item.fields.button.text : item.name}
+      </ButtonPrimary>
+    ))
+  }
+</div>

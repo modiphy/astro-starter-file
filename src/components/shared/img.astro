@@ -1,0 +1,7 @@
+---
+const { imageClass, image } = Astro.props
+
+const alt = image?.altText ? image.altText : 'Britt Hill Interiors'
+---
+
+{image && <img loading="lazy" src={image?.imageUrl} alt={alt} class={imageClass} />}

@@ -1,0 +1,28 @@
+---
+import { Img } from '@/shared'
+
+const { fields, imageClass = '', figureClass = 'relative', properties = {} } = Astro.props
+---
+
+<figure class={figureClass}>
+  {
+    fields.image && !fields.video && (
+      <Img
+        imageClass={imageClass}
+        image={fields.image}
+        height={properties.height ?? ''}
+        width={properties.width ?? ''}
+      />
+    )
+  }
+
+  {
+    fields.video && (
+      <div class={imageClass}>
+        <video playsinline="" autoplay="" muted="" loop="">
+          <source src={fields.video.videoUrl} type="video/mp4" />
+        </video>
+      </div>
+    )
+  }
+</figure>
